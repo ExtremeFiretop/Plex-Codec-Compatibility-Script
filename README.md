@@ -2,7 +2,7 @@
 
 1. Download Prerequisites: MKVToolNix (https://mkvtoolnix.download/downloads.html#windows) and ffmpeg (https://github.com/BtbN/FFmpeg-Builds/releases)
 2. Install MKVToolNix first (Follow the normal installation process.)
-3. Add the following directories in your "User" and "System" PATH variables by going to "View Advanced System Settings" and selecting "Environment Variables" (Win10)
+3. Add the 2 following directories in your "User" and "System" PATH variables by going to "View Advanced System Settings" and selecting "Environment Variables" (Win10)
     a. "C:\Program Files\MKVToolNix"
     b. "C:\Program Files\MKVToolNix\tools"
 5. Place the "ffmpeg.exe" in the "tools" directory for MKVToolNix (i.e: C:\Program Files\MKVToolNix\tools\ffmpeg.exe)
