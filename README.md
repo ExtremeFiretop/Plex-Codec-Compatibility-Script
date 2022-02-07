@@ -6,7 +6,7 @@
 4. Place the "ffmpeg.exe" in the "tools" directory for MKVToolNix (i.e: C:\Program Files\MKVToolNix\tools\ffmpeg.exe)
 5. Create a new directory in: "C:\Program Files\MKVToolNix\" called: "Custom Scripts" (i.e: C:\Program Files\MKVToolNix\Custom Scripts)
 6. Place the Powershell .ps1 script file in the "Custom Scripts" directory you just created.
-7. Modify the Powershell File (.ps1) with your movie/video directory location to check and convert.
+7. Modify the Powershell File (.ps1) with your movie/plex media directory location to check and convert.
 8. Place all the relevant .bat files in the same directory. (i.e: C:\Program Files\MKVToolNix\Custom Scripts)
 9. Import the .xml Task into Task scheduler and adjust as desired.
 10. Profit? 
