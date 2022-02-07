@@ -9,4 +9,5 @@
 7. Modify the Powershell File (.ps1) with your movie/video directory location to check and convert.
 8. Place all the relevant .bat files in the same directory. (i.e: C:\Program Files\MKVToolNix\Custom Scripts)
 9. Import the .xml Task into Task scheduler and adjust as desired.
-10. Profit? Every day it will now check media in the off hours and convert incompatible codecs and remove subtitles and remove commentary tracks or extra languages, etc.
+10. Profit? 
+-Every night it will now check any media downloaded that day in the off hours and convert/reorder incompatible codecs (DTS and TrueHD) and remove subtitles and remove commentary tracks or extra languages, etc.
