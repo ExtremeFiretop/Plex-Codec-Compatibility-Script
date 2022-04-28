@@ -22,7 +22,7 @@ $Track2TrueA = "Track ID 2: audio (TrueHD Atmos)"
 
 ##Commentary Track Search & Remove Code##
 Set-Location -Path $MoviesD
-$oldvids = Get-ChildItem *.mkv -Recurse
+$oldvids = Get-ChildItem *.mkv -Recurse | sort LastWriteTime | select -last 3
 foreach ($oldvid in $oldvids) {
 $vidpath = mkvmerge.exe -J $oldvid | Select-String -SimpleMatch $MoviesDC | foreach{ $_.ToString().TrimStart() }
 $Newestvidpath = $vidpath | Select-String -SimpleMatch $MoviesDC | foreach{$_ -replace '"file_name": "',"" }
@@ -39,7 +39,7 @@ $newvids = mkvmerge.exe -J $oldvid
 
 ##DTS Search and Reorder & Replace Code##
 Set-Location -Path $MoviesD
-$oldvids = Get-ChildItem *.mkv -Recurse
+$oldvids = Get-ChildItem *.mkv -Recurse | sort LastWriteTime | select -last 3
 foreach ($oldvid in $oldvids) {
 $vidpath = mkvmerge.exe -i $oldvid | Select-String -SimpleMatch $MoviesD | foreach{ $_.ToString().TrimStart("File '") }
 $newVariable = Split-Path $vidpath -Parent
@@ -73,7 +73,7 @@ $newvids = mkvmerge.exe -i $oldvid
 
 ##TrueHD Search and Reorder & Replace Code##
 Set-Location -Path $MoviesD
-$oldvids = Get-ChildItem *.mkv -Recurse
+$oldvids = Get-ChildItem *.mkv -Recurse | sort LastWriteTime | select -last 3
 foreach ($oldvid in $oldvids) {
 $vidpath = mkvmerge.exe -i $oldvid | Select-String -SimpleMatch $MoviesD | foreach{ $_.ToString().TrimStart("File '") }
 $newVariable = Split-Path $vidpath -Parent
@@ -107,7 +107,7 @@ $newvids = mkvmerge.exe -i $oldvid
 
 ##Subtitle and Search & Remove Code##
 Set-Location -Path $MoviesD
-$oldvids = Get-ChildItem *.mkv -Recurse
+$oldvids = Get-ChildItem *.mkv -Recurse | sort LastWriteTime | select -last 3
 foreach ($oldvid in $oldvids) {
 $vidpath = mkvmerge.exe -i $oldvid | Select-String -SimpleMatch $MoviesD | foreach{ $_.ToString().TrimStart("File '") }
 $newVariable = Split-Path $vidpath -Parent
