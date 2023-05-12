@@ -1,4 +1,4 @@
-﻿##Script Locations##
+##Script Locations##
 $CustomScripts = "C:\Program Files\MKVToolNix\Custom Scripts"
 ##Root of Movies Directory##
 $MoviesD = "M:\Movies\"
@@ -19,6 +19,34 @@ $Track1TrueA = "Track ID 1: audio (TrueHD Atmos)"
 $Track2True = "Track ID 2: audio (TrueHD)"
 $Track2TrueA = "Track ID 2: audio (TrueHD Atmos)"
 
+function Show-Notification {
+    [cmdletbinding()]
+    Param (
+        [string]
+        $ToastTitle,
+        [string]
+        [parameter(ValueFromPipeline)]
+        $ToastText
+    )
+
+    [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null
+    $Template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02)
+
+    $RawXml = [xml] $Template.GetXml()
+    ($RawXml.toast.visual.binding.text|where {$_.id -eq "1"}).AppendChild($RawXml.CreateTextNode($ToastTitle)) > $null
+    ($RawXml.toast.visual.binding.text|where {$_.id -eq "2"}).AppendChild($RawXml.CreateTextNode($ToastText)) > $null
+
+    $SerializedXml = New-Object Windows.Data.Xml.Dom.XmlDocument
+    $SerializedXml.LoadXml($RawXml.OuterXml)
+
+    $Toast = [Windows.UI.Notifications.ToastNotification]::new($SerializedXml)
+    $Toast.Tag = "MKV Cleanup"
+    $Toast.Group = "MKV Cleanup"
+    $Toast.ExpirationTime = [DateTimeOffset]::Now.AddHours(8)
+
+    $Notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("MKV Cleanup")
+    $Notifier.Show($Toast);
+}
 
 ##Commentary Track Search & Remove Code##
 Set-Location -Path $MoviesD
@@ -32,7 +60,8 @@ $newvids = mkvmerge.exe -J $oldvid
     if($newvids -match "Commentary")
     {& $CustomScripts\DelMKVComment.bat
     Start-Sleep -Milliseconds 500
-    get-childitem -Path * *.NoComments.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".NoComments", "") }
+    get-childitem -Path * *.NoComments.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".NoComments", "")
+    Show-Notification "Removed Commentary Tracks!" "Removed Commentary Tracks Detected from $newVariable" }
     }
 }
 
@@ -51,6 +80,7 @@ $newvids = mkvmerge.exe -i $oldvid
     {& $CustomScripts\DTSReorder.bat
     Start-Sleep -Milliseconds 500
     get-childitem -Path * *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
+    Show-Notification "DTS Tracks Detected!" "Reordered DTS Tracks Detected from $newVariable" 
     continue
     }
 
@@ -59,6 +89,7 @@ $newvids = mkvmerge.exe -i $oldvid
     {& $CustomScripts\DTSConvert.bat
     Start-Sleep -Milliseconds 500
     get-childitem -Path * *.ACConverted.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".ACConverted", "") }
+    Show-Notification "DTS Tracks Detected!" "Converted DTS Tracks Detected from $newVariable" 
     continue
     }
 
@@ -67,6 +98,7 @@ $newvids = mkvmerge.exe -i $oldvid
     {& $CustomScripts\DTSConvert.bat
     Start-Sleep -Milliseconds 500
     get-childitem -Path * *.ACConverted.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".ACConverted", "") }
+    Show-Notification "DTS Tracks Detected!" "Converted DTS Tracks Detected from $newVariable" 
     }
 }
 
@@ -85,6 +117,7 @@ $newvids = mkvmerge.exe -i $oldvid
     {& $CustomScripts\TrueHDTReorder.bat
     Start-Sleep -Milliseconds 500
     get-childitem -Path * *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
+    Show-Notification "TrueHD Tracks Detected!" "Reordered TrueHD Tracks Detected from $newVariable" 
     continue
 }
 
@@ -93,6 +126,7 @@ $newvids = mkvmerge.exe -i $oldvid
     {& $CustomScripts\TrueHDConvert.bat
     Start-Sleep -Milliseconds 500
     get-childitem -Path * *.ACConverted.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".ACConverted", "") }
+    Show-Notification "TrueHD Tracks Detected!" "Converted TrueHD Tracks Detected from $newVariable" 
     continue
 }
 
@@ -101,6 +135,7 @@ $newvids = mkvmerge.exe -i $oldvid
     {& $CustomScripts\TrueHDConvert.bat
     Start-Sleep -Milliseconds 500
     get-childitem -Path * *.ACConverted.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".ACConverted", "") }
+    Show-Notification "TrueHD Tracks Detected!" "Converted TrueHD Tracks Detected from $newVariable" 
     }
 }
 
@@ -117,6 +152,7 @@ $newvids = mkvmerge.exe -i $oldvid
     {& $CustomScripts\DelMKVSubs.bat
     Start-Sleep -Milliseconds 500
     get-childitem -Path * *.NoSubs.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".NoSubs", "") }
+    Show-Notification "Subtitle Tracks Detected!" "Removed Subtitle Tracks Detected from $newVariable" 
     }
 }
 
