@@ -9,7 +9,7 @@ for %%a in (*.mkv) do (
         ) else (
             echo.
             echo "%%a" has Subtitles to remove
-            mkvmerge --priority higher -q -o "%%~dpna.NoSubs%%~xa" --audio-tracks und,eng --no-subtitles "%%a"
+            mkvmerge --priority higher -q -o "%%~dpna.NoSubs%%~xa" --no-subtitles "%%a"
             if errorlevel 1 (
 			    if not exist "%USERPROFILE%\Desktop\PlexErrors" mkdir "%USERPROFILE%\Desktop\PlexErrors"
                 echo Warnings/errors generated during remuxing, original file not deleted > "%USERPROFILE%\Desktop\PlexErrors\%%a_SubtitleError_%mydate%.txt"
