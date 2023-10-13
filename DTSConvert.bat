@@ -9,7 +9,7 @@ for %%a in (*.mkv) do (
         ) else (
             echo.
             echo "%%a" has DTS audio to convert
-            ffmpeg -loglevel error -nostats -fflags +genpts -i "%%a" -map 0:v:0 -c:v:0 copy -map 0:a:m:language:eng? -c:a copy -disposition:a:0 default -disposition:a:1 0 -disposition:a:2 0 -disposition:a:3 0 -disposition:a:4 0 -map 0:a:0 -c:a:0 ac3 -metadata:s:a:0 title="Transcoded Compatibility Track" "%%~dpna.ACConverted%%~xa"
+            ffmpeg -loglevel error -nostats -fflags +genpts -i "%%a" -map 0:v:0 -c:v:0 copy -map 0:a -c:a copy -disposition:a:0 default -disposition:a:1 0 -disposition:a:2 0 -disposition:a:3 0 -disposition:a:4 0 -map 0:a:0 -c:a:0 ac3 -metadata:s:a:0 title="Transcoded Compatibility Track" "%%~dpna.ACConverted%%~xa"
 			if errorlevel 1 (
 			    if not exist "%USERPROFILE%\Desktop\PlexErrors" mkdir "%USERPROFILE%\Desktop\PlexErrors"
                 echo Warnings/errors generated during remuxing, original file not deleted > "%USERPROFILE%\Desktop\PlexErrors\%%a_ConvertError_%mydate%.txt"
