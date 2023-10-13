@@ -9,7 +9,7 @@ for %%a in (*.mkv) do (
         ) else (
 		    echo.
             echo "%%a" has TrueHD audio to re-order
-            mkvmerge --priority higher -q -o "%%~dpna.AudioTrackReordered%%~xa" --audio-tracks und,eng --default-track 1:no --default-track 2:yes --no-subtitles "%%a" --track-order 0:0,0:2,0:1
+            mkvmerge --priority higher -q -o "%%~dpna.AudioTrackReordered%%~xa" --default-track 1:no --default-track 2:yes --no-subtitles "%%a" --track-order 0:0,0:2,0:1
             if errorlevel 1 (
 			    if not exist "%USERPROFILE%\Desktop\PlexErrors" mkdir "%USERPROFILE%\Desktop\PlexErrors"
                 echo Warnings/errors generated during remuxing, original file not deleted > "%USERPROFILE%\Desktop\PlexErrors\%%a_ReorderError_%mydate%.txt"
