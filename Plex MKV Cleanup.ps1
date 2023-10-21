@@ -141,19 +141,19 @@ $newvids = mkvmerge.exe -i $oldvid
 
 
 ##Subtitle and Search & Remove Code##
-Set-Location -Path $MoviesD
-$oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 8
-foreach ($oldvid in $oldvids) {
-$vidpath = mkvmerge.exe -i $oldvid | Select-String -SimpleMatch $MoviesD | foreach{ $_.ToString().TrimStart("File '") }
-$newVariable = Split-Path $vidpath -Parent
-Set-Location -Path "$newVariable"
-$newvids = mkvmerge.exe -i $oldvid
-    if($newvids -match "subtitles")
-    {& $CustomScripts\DelMKVSubs.bat
-    Start-Sleep -Milliseconds 500
-    get-childitem -Path * *.NoSubs.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".NoSubs", "") }
-    Show-Notification "Subtitle Tracks Detected!" "Removed Subtitle Tracks Detected from $newVariable" 
-    }
-}
+#Set-Location -Path $MoviesD
+#$oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 8
+#foreach ($oldvid in $oldvids) {
+#$vidpath = mkvmerge.exe -i $oldvid | Select-String -SimpleMatch $MoviesD | foreach{ $_.ToString().TrimStart("File '") }
+#$newVariable = Split-Path $vidpath -Parent
+#Set-Location -Path "$newVariable"
+#$newvids = mkvmerge.exe -i $oldvid
+#    if($newvids -match "subtitles")
+#    {& $CustomScripts\DelMKVSubs.bat
+#    Start-Sleep -Milliseconds 500
+#    get-childitem -Path * *.NoSubs.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".NoSubs", "") }
+#    Show-Notification "Subtitle Tracks Detected!" "Removed Subtitle Tracks Detected from $newVariable" 
+#    }
+# }
 
 exit
