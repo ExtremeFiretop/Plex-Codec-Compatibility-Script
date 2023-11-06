@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-16"?>
+<?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
   <RegistrationInfo>
     <Date>2021-12-11T09:45:49.0737283</Date>
@@ -8,7 +8,7 @@
   </RegistrationInfo>
   <Triggers>
     <CalendarTrigger>
-      <StartBoundary>2022-01-23T02:30:00</StartBoundary>
+      <StartBoundary>2022-01-23T04:30:00</StartBoundary>
       <ExecutionTimeLimit>PT8H</ExecutionTimeLimit>
       <Enabled>false</Enabled>
       <ScheduleByDay>
@@ -19,9 +19,9 @@
       <ExecutionTimeLimit>PT8H</ExecutionTimeLimit>
       <Enabled>true</Enabled>
       <Subscription>&lt;QueryList&gt;&lt;Query Id="0" Path="Security"&gt;&lt;Select Path="Security"&gt;
-*[EventData[Data[@Name='ProcessName'] and (Data='C:\ProgramData\Radarr\bin\Radarr.Console.exe')]]
+*[EventData[Data[@Name='ProcessName'] and (Data='C:\ProgramData\Radarr\bin\Radarr.Console.exe' or Data='C:\ProgramData\Radarr\bin\Radarr.exe')]]
 and
-*[System[(Level=4 or Level=0) and (EventID=4660)]]
+*[System[(Level=4 or Level=0) and (EventID=4663)]]
 &lt;/Select&gt;&lt;/Query&gt;&lt;/QueryList&gt;</Subscription>
       <Delay>PT1M</Delay>
     </EventTrigger>
@@ -49,13 +49,17 @@ and
     <RunOnlyIfIdle>false</RunOnlyIfIdle>
     <DisallowStartOnRemoteAppSession>false</DisallowStartOnRemoteAppSession>
     <UseUnifiedSchedulingEngine>true</UseUnifiedSchedulingEngine>
-    <WakeToRun>true</WakeToRun>
+    <WakeToRun>false</WakeToRun>
     <ExecutionTimeLimit>PT8H</ExecutionTimeLimit>
     <Priority>1</Priority>
+    <RestartOnFailure>
+      <Interval>PT1M</Interval>
+      <Count>3</Count>
+    </RestartOnFailure>
   </Settings>
   <Actions Context="Author">
     <Exec>
-      <Command>C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe</Command>
+      <Command>powershell.exe</Command>
       <Arguments>-WindowStyle Hidden -File "C:\Program Files\MKVToolNix\Custom Scripts\Plex MKV Cleanup.ps1"</Arguments>
     </Exec>
   </Actions>
