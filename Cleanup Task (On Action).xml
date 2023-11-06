@@ -21,9 +21,9 @@
       <Subscription>&lt;QueryList&gt;&lt;Query Id="0" Path="Security"&gt;&lt;Select Path="Security"&gt;
 *[EventData[Data[@Name='ProcessName'] and (Data='C:\ProgramData\Radarr\bin\Radarr.Console.exe' or Data='C:\ProgramData\Radarr\bin\Radarr.exe')]]
 and
-*[System[(Level=4 or Level=0) and (EventID=4663)]]
+*[System[(Level=0) and (EventID=4663)]]
 &lt;/Select&gt;&lt;/Query&gt;&lt;/QueryList&gt;</Subscription>
-      <Delay>PT1M</Delay>
+      <Delay>PT5M</Delay>
     </EventTrigger>
   </Triggers>
   <Principals>
