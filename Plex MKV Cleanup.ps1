@@ -52,16 +52,15 @@ function Show-Notification {
 Set-Location -Path $MoviesD
 $oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 8
 foreach ($oldvid in $oldvids) {
-$vidpath = mkvmerge.exe -J $oldvid | Select-String -SimpleMatch $MoviesDC | foreach{ $_.ToString().TrimStart() }
-$Newestvidpath = $vidpath | Select-String -SimpleMatch $MoviesDC | foreach{$_ -replace '"file_name": "',"" }
-$newVariable = Split-Path $Newestvidpath -Parent
+$newVariable = $oldvid.DirectoryName
 Set-Location -Path "$newVariable"
 $newvids = mkvmerge.exe -J $oldvid
     if($newvids -match "Commentary")
     {& $CustomScripts\DelMKVComment.bat
     Start-Sleep -Milliseconds 500
-    get-childitem -Path * *.NoComments.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".NoComments", "")
-    Show-Notification "Removed Commentary Tracks!" "Removed Commentary Tracks Detected from $newVariable" }
+    Get-ChildItem -Path "$newVariable\*.NoComments.mkv" | ForEach-Object {
+    Rename-Item -Path $_.FullName -NewName $_.FullName.Replace(".NoComments", "")}
+    Show-Notification "Removed Commentary Tracks!" "Removed Commentary Tracks Detected from $newVariable"
     }
 }
 
@@ -70,16 +69,15 @@ $newvids = mkvmerge.exe -J $oldvid
 Set-Location -Path $MoviesD
 $oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 8
 foreach ($oldvid in $oldvids) {
-$vidpath = mkvmerge.exe -i $oldvid | Select-String -SimpleMatch $MoviesD | foreach{ $_.ToString().TrimStart("File '") }
-$newVariable = Split-Path $vidpath -Parent
+$newVariable = $oldvid.DirectoryName
 Set-Location -Path "$newVariable"
-$newvids = mkvmerge.exe -i $oldvid
+$newvids = mkvmerge.exe -i $oldvid.FullName
 
 #Reorder if DTS is first Audio track, and anything but DTS or TrueHD is the second audio track#
     if(($newvids -match [regex]::Escape($Track1DTS) -xor ($newvids -match [regex]::Escape($Track1DTSHD))) -and ($newvids -notmatch [regex]::Escape($Track2DTS) -xor ($newvids -match [regex]::Escape($Track2DTSHD))) -and ($newvids -notmatch [regex]::Escape($Track2True) -xor ($newvids -match [regex]::Escape($Track2TrueA))) -and ($newvids -match [regex]::Escape($Track2A)))
     {& $CustomScripts\DTSReorder.bat
     Start-Sleep -Milliseconds 500
-    get-childitem -Path * *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
+    get-childitem -Path *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
     Show-Notification "DTS Tracks Detected!" "Reordered DTS Tracks Detected from $newVariable" 
     continue
     }
@@ -88,7 +86,9 @@ $newvids = mkvmerge.exe -i $oldvid
     if(($newvids -match [regex]::Escape($Track1DTS) -xor $newvids -match [regex]::Escape($Track1DTSHD)) -and ($newvids -match [regex]::Escape($Track2DTSHD) -xor $newvids -match [regex]::Escape($Track2DTS) -xor $newvids -match [regex]::Escape($Track2TrueA) -xor $newvids -match [regex]::Escape($Track2True)))
     {& $CustomScripts\DTSConvert.bat
     Start-Sleep -Milliseconds 500
-    get-childitem -Path * *.ACConverted.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".ACConverted", "") }
+    Get-ChildItem -Path "$newVariable\*.ACConverted.mkv" | ForEach-Object {
+    Rename-Item -Path $_.FullName -NewName $_.FullName.Replace(".ACConverted", "")
+}
     Show-Notification "DTS Tracks Detected!" "Converted DTS Tracks Detected from $newVariable" 
     continue
     }
@@ -97,7 +97,9 @@ $newvids = mkvmerge.exe -i $oldvid
     if(($newvids -match [regex]::Escape($Track1DTSHD) -xor $newvids -match [regex]::Escape($Track1DTS)) -and ($newvids -notmatch [regex]::Escape($Track2A)))
     {& $CustomScripts\DTSConvert.bat
     Start-Sleep -Milliseconds 500
-    get-childitem -Path * *.ACConverted.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".ACConverted", "") }
+    Get-ChildItem -Path "$newVariable\*.ACConverted.mkv" | ForEach-Object {
+    Rename-Item -Path $_.FullName -NewName $_.FullName.Replace(".ACConverted", "")
+}
     Show-Notification "DTS Tracks Detected!" "Converted DTS Tracks Detected from $newVariable" 
     }
 }
@@ -107,16 +109,15 @@ $newvids = mkvmerge.exe -i $oldvid
 Set-Location -Path $MoviesD
 $oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 8
 foreach ($oldvid in $oldvids) {
-$vidpath = mkvmerge.exe -i $oldvid | Select-String -SimpleMatch $MoviesD | foreach{ $_.ToString().TrimStart("File '") }
-$newVariable = Split-Path $vidpath -Parent
+$newVariable = $oldvid.DirectoryName
 Set-Location -Path "$newVariable"
-$newvids = mkvmerge.exe -i $oldvid
+$newvids = mkvmerge.exe -i $oldvid.FullName
 
 #Reorder if TrueHD is first Audio track, and anything but DTS or TrueHD is the second audio track#
     if(($newvids -match [regex]::Escape($Track1True) -xor ($newvids -match [regex]::Escape($Track1TrueA))) -and ($newvids -notmatch [regex]::Escape($Track2True) -xor ($newvids -match [regex]::Escape($Track2TrueA))) -and ($newvids -notmatch [regex]::Escape($Track2DTS) -xor ($newvids -match [regex]::Escape($Track2DTSHD))) -and ($newvids -match [regex]::Escape($Track2A)))
     {& $CustomScripts\TrueHDTReorder.bat
     Start-Sleep -Milliseconds 500
-    get-childitem -Path * *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
+    get-childitem -Path *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
     Show-Notification "TrueHD Tracks Detected!" "Reordered TrueHD Tracks Detected from $newVariable" 
     continue
 }
@@ -125,7 +126,9 @@ $newvids = mkvmerge.exe -i $oldvid
     if(($newvids -match [regex]::Escape($Track1True) -xor $newvids -match [regex]::Escape($Track1TrueA)) -and ($newvids -match [regex]::Escape($Track2TrueA) -xor $newvids -match [regex]::Escape($Track2True) -xor $newvids -match [regex]::Escape($Track2DTS) -xor $newvids -match [regex]::Escape($Track2DTSHD)))
     {& $CustomScripts\TrueHDConvert.bat
     Start-Sleep -Milliseconds 500
-    get-childitem -Path * *.ACConverted.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".ACConverted", "") }
+    Get-ChildItem -Path "$newVariable\*.ACConverted.mkv" | ForEach-Object {
+    Rename-Item -Path $_.FullName -NewName $_.FullName.Replace(".ACConverted", "")
+}
     Show-Notification "TrueHD Tracks Detected!" "Converted TrueHD Tracks Detected from $newVariable" 
     continue
 }
@@ -134,7 +137,9 @@ $newvids = mkvmerge.exe -i $oldvid
     if(($newvids -match [regex]::Escape($Track1True) -xor $newvids -match [regex]::Escape($Track1TrueA)) -and ($newvids -notmatch [regex]::Escape($Track2A)))
     {& $CustomScripts\TrueHDConvert.bat
     Start-Sleep -Milliseconds 500
-    get-childitem -Path * *.ACConverted.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".ACConverted", "") }
+    Get-ChildItem -Path "$newVariable\*.ACConverted.mkv" | ForEach-Object {
+    Rename-Item -Path $_.FullName -NewName $_.FullName.Replace(".ACConverted", "")
+}
     Show-Notification "TrueHD Tracks Detected!" "Converted TrueHD Tracks Detected from $newVariable" 
     }
 }
@@ -142,18 +147,17 @@ $newvids = mkvmerge.exe -i $oldvid
 
 ##Subtitle and Search & Remove Code##
 #Set-Location -Path $MoviesD
-#$oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 8
+#$oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 76
 #foreach ($oldvid in $oldvids) {
-#$vidpath = mkvmerge.exe -i $oldvid | Select-String -SimpleMatch $MoviesD | foreach{ $_.ToString().TrimStart("File '") }
-#$newVariable = Split-Path $vidpath -Parent
+#$newVariable = $oldvid.DirectoryName
 #Set-Location -Path "$newVariable"
-#$newvids = mkvmerge.exe -i $oldvid
+#$newvids = mkvmerge.exe -i $oldvid.FullName
 #    if($newvids -match "subtitles")
 #    {& $CustomScripts\DelMKVSubs.bat
 #    Start-Sleep -Milliseconds 500
-#    get-childitem -Path * *.NoSubs.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".NoSubs", "") }
+#    get-childitem -Path *.NoSubs.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".NoSubs", "") }
 #    Show-Notification "Subtitle Tracks Detected!" "Removed Subtitle Tracks Detected from $newVariable" 
 #    }
-# }
+#}
 
 exit
