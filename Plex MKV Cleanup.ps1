@@ -147,7 +147,7 @@ $newvids = mkvmerge.exe -i $oldvid.FullName
 
 ##Subtitle and Search & Remove Code##
 #Set-Location -Path $MoviesD
-#$oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 76
+#$oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 8
 #foreach ($oldvid in $oldvids) {
 #$newVariable = $oldvid.DirectoryName
 #Set-Location -Path "$newVariable"
