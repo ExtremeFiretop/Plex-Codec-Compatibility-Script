@@ -48,22 +48,43 @@ function Show-Notification {
     $Notifier.Show($Toast);
 }
 
-##Commentary Track Search & Remove Code##
+## Commentary Track Search & Remove Code ##
 Set-Location -Path $MoviesD
-$oldvids = Get-ChildItem *.mkv -Recurse | sort Creationtime | select -last 8
+$oldvids = Get-ChildItem *.mkv -Recurse | Sort-Object CreationTime | Select-Object -Last 1
+
 foreach ($oldvid in $oldvids) {
-$newVariable = $oldvid.DirectoryName
-Set-Location -Path "$newVariable"
-$newvids = mkvmerge.exe -J $oldvid
-    if($newvids -match "Commentary")
-    {& $CustomScripts\DelMKVComment.bat
-    Start-Sleep -Milliseconds 500
-    Get-ChildItem -Path "$newVariable\*.NoComments.mkv" | ForEach-Object {
-    Rename-Item -Path $_.FullName -NewName $_.FullName.Replace(".NoComments", "")}
-    Show-Notification "Removed Commentary Tracks!" "Removed Commentary Tracks Detected from $newVariable"
+    $newVariable = $oldvid.DirectoryName
+    Set-Location -Path "$newVariable"
+    
+    # Capture the JSON output from mkvmerge.exe
+    $jsonOutput = & mkvmerge.exe -J $oldvid | Out-String
+    # Parse the JSON output
+    $obj = $jsonOutput | ConvertFrom-Json
+    
+    # Initialize flag
+    $hasCommentary = $false
+
+    # Check each track for 'commentary' in any property
+    foreach ($track in $obj.tracks) {
+        foreach ($prop in $track.properties.PSObject.Properties) {
+            # Ensure the property value is a string before matching
+            if ($prop.Value -is [string] -and $prop.Value -match '(?i)\bcommentary\b') {
+                $hasCommentary = $true
+                break
+            }
+        }
+        if ($hasCommentary) { break }
+    }
+    
+    if ($hasCommentary) {
+        & "$CustomScripts\DelMKVComment.bat"
+        Start-Sleep -Milliseconds 500
+        Get-ChildItem -Path "$newVariable\*.NoComments.mkv" | ForEach-Object {
+            Rename-Item -Path $_.FullName -NewName $_.FullName.Replace(".NoComments", "")
+        }
+        Show-Notification "Removed Commentary Tracks!" "Removed Commentary Tracks Detected from $newVariable"
     }
 }
-
 
 ##DTS Search and Reorder & Replace Code##
 Set-Location -Path $MoviesD
