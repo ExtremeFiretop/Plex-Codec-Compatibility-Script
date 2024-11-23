@@ -26,4 +26,4 @@
 8. Select (Check) the option for: "Only apply these auditing settings to objects and/or contains within this container".
 9. Select Okay, and Apply and close the window.
 
--The task scheduler has 2 triggers, one to run every night to check any media downloaded that day in the off hours, the other is to do it on every import of new media, and convert/reorder incompatible codecs (DTS and TrueHD) and remove subtitles and remove commentary tracks or extra languages, etc.
+-The task scheduler has 2 triggers, one to run every night to check any media downloaded that day in the off hours, the other is to do it on every import of new media, and convert incompatible codecs (DTS and TrueHD) and remove subtitles and remove commentary tracks or extra languages, etc.
