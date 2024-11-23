@@ -95,16 +95,16 @@ Set-Location -Path "$newVariable"
 $newvids = mkvmerge.exe -i $oldvid.FullName
 
 #Reorder if DTS is first Audio track, and anything but DTS or TrueHD is the second audio track#
-    if (($newvids.Contains($Track1DTS) -or $newvids.Contains($Track1DTSHD)) -and
-    (-not $newvids.Contains($Track2DTS) -and -not $newvids.Contains($Track2DTSHD) -and
-     -not $newvids.Contains($Track2True) -and -not $newvids.Contains($Track2TrueA)) -and
-    ($newvids -match $Track2A))
-    {& $CustomScripts\DTSReorder.bat
-    Start-Sleep -Milliseconds 500
-    get-childitem -Path *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
-    Show-Notification "DTS Tracks Detected!" "Reordered DTS Tracks Detected from $newVariable" 
-    continue
-    }
+#    if (($newvids.Contains($Track1DTS) -or $newvids.Contains($Track1DTSHD)) -and
+#    (-not $newvids.Contains($Track2DTS) -and -not $newvids.Contains($Track2DTSHD) -and
+#     -not $newvids.Contains($Track2True) -and -not $newvids.Contains($Track2TrueA)) -and
+#    ($newvids -match $Track2A))
+#    {& $CustomScripts\DTSReorder.bat
+#    Start-Sleep -Milliseconds 500
+#    get-childitem -Path *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
+#    Show-Notification "DTS Tracks Detected!" "Reordered DTS Tracks Detected from $newVariable" 
+#    continue
+#    }
 
 #Convert if DTS is first Audio track, and DTS or TrueHD is the second audio track#
     if(($newvids.Contains($Track1DTS) -or $newvids.Contains($Track1DTSHD)) -and 
@@ -139,16 +139,16 @@ Set-Location -Path "$newVariable"
 $newvids = mkvmerge.exe -i $oldvid.FullName
 
 #Reorder if TrueHD is first Audio track, and anything but DTS or TrueHD is the second audio track#
-    if (($newvids.Contains($Track1True) -or $newvids.Contains($Track1TrueA)) -and
-    (-not $newvids.Contains($Track2True) -and -not $newvids.Contains($Track2TrueA) -and
-     -not $newvids.Contains($Track2DTS) -and -not $newvids.Contains($Track2DTSHD)) -and
-    ($newvids -match $Track2A))
-    {& $CustomScripts\TrueHDTReorder.bat
-    Start-Sleep -Milliseconds 500
-    get-childitem -Path *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
-    Show-Notification "TrueHD Tracks Detected!" "Reordered TrueHD Tracks Detected from $newVariable" 
-    continue
-}
+#    if (($newvids.Contains($Track1True) -or $newvids.Contains($Track1TrueA)) -and
+#    (-not $newvids.Contains($Track2True) -and -not $newvids.Contains($Track2TrueA) -and
+#     -not $newvids.Contains($Track2DTS) -and -not $newvids.Contains($Track2DTSHD)) -and
+#    ($newvids -match $Track2A))
+#    {& $CustomScripts\TrueHDTReorder.bat
+#    Start-Sleep -Milliseconds 500
+#    get-childitem -Path *.AudioTrackReordered.mkv -Recurse | foreach { rename-item $_ $_.Name.Replace(".AudioTrackReordered", "") }
+#    Show-Notification "TrueHD Tracks Detected!" "Reordered TrueHD Tracks Detected from $newVariable" 
+#    continue
+#}
 
 #Convert if TrueHD is first Audio track, and TrueHD or DTS is the second audio track#
     if(($newvids.Contains($Track1True) -or $newvids.Contains($Track1TrueA)) -and 
